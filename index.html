@@ -6,7 +6,6 @@
     <title>เครื่องคำนวณตารางผ่อนชำระ</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-    <style>
         :root {
             --primary-color: #2563eb;
             --secondary-color: #1e40af;
@@ -188,44 +187,6 @@
                 min-width: 100%;
             }
         }
-        
-        .save-form {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            margin-top: 2rem;
-        }
-
-        .save-form h3 {
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        .save-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .success-message {
-            background-color: #10B981;
-            color: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .error-message {
-            background-color: #EF4444;
-            color: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -295,41 +256,6 @@
         </div>
     </div>
 
-    <div class="save-form" id="saveForm" style="display: none;">
-        <h3>บันทึกข้อมูลการคำนวณ</h3>
-        <div class="save-grid">
-            <div class="input-field">
-                <label>ชื่อ-นามสกุล</label>
-                <input type="text" id="customerName" placeholder="ระบุชื่อ-นามสกุล">
-            </div>
-            <div class="input-field">
-                <label>เบอร์โทรศัพท์</label>
-                <input type="tel" id="phoneNumber" placeholder="ระบุเบอร์โทรศัพท์">
-            </div>
-            <div class="input-field">
-                <label>อีเมล</label>
-                <input type="email" id="email" placeholder="ระบุอีเมล">
-            </div>
-            <div class="input-field">
-                <label>หมายเหตุ</label>
-                <input type="text" id="note" placeholder="ระบุหมายเหตุ (ถ้ามี)">
-            </div>
-        </div>
-        <div class="button-container">
-            <button onclick="saveCalculation()" class="calculate-btn">
-                <i class="fas fa-save"></i>
-                บันทึกข้อมูล
-            </button>
-        </div>
-        <div id="successMessage" class="success-message">
-            บันทึกข้อมูลเรียบร้อยแล้ว
-        </div>
-        <div id="errorMessage" class="error-message">
-            เกิดข้อผิดพลาดในการบันทึกข้อมูล
-        </div>
-    </div>
-
-    <script>
     <script>
         function formatCurrency(number) {
             return new Intl.NumberFormat('th-TH', {
@@ -378,75 +304,6 @@
             document.getElementById('totalPrincipal').textContent = formatCurrency(principal);
             document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
             document.getElementById('totalPayment').textContent = formatCurrency(principal + totalInterest);
-        }
-
-        async function saveCalculation() {
-            const name = document.getElementById('customerName').value;
-            const phone = document.getElementById('phoneNumber').value;
-            const email = document.getElementById('email').value;
-            const note = document.getElementById('note').value;
-            
-            if (!name || !phone || !email) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-
-            const principal = document.getElementById('principal').value;
-            const periods = document.getElementById('periods').value;
-            const rate = document.getElementById('interestRate').value;
-
-            const data = {
-                title: `Loan Calculation - ${name}`,
-                body: `
-Name: ${name}
-Phone: ${phone}
-Email: ${email}
-Note: ${note}
-
-Loan Details:
-- Principal: ${principal}
-- Periods: ${periods}
-- Interest Rate: ${rate}%
-
-Total Interest: ${document.getElementById('totalInterest').textContent}
-Total Payment: ${document.getElementById('totalPayment').textContent}
-                `
-            };
-
-            try {
-                const response = await fetch('https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/issues', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'token YOUR_GITHUB_TOKEN',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    document.getElementById('successMessage').style.display = 'block';
-                    document.getElementById('errorMessage').style.display = 'none';
-                    setTimeout(() => {
-                        document.getElementById('successMessage').style.display = 'none';
-                    }, 3000);
-                } else {
-                    throw new Error('Failed to save');
-                }
-            } catch (error) {
-                document.getElementById('errorMessage').style.display = 'block';
-                document.getElementById('successMessage').style.display = 'none';
-                setTimeout(() => {
-                    document.getElementById('errorMessage').style.display = 'none';
-                }, 3000);
-            }
-        }
-
-        // Modify calculateLoan function to show save form
-        function calculateLoan() {
-            // ... (Previous calculation code) ...
-
-            // Show save form after calculation
-            document.getElementById('saveForm').style.display = 'block';
         }
     </script>
 </body>
