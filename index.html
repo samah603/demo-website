@@ -5,30 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เครื่องคำนวณตารางผ่อนชำระ</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css"> </head>
 <body>
     <div class="container">
         <div class="calculator-header">
             <h1>เครื่องคำนวณตารางผ่อนชำระ</h1>
             <p>คำนวณการผ่อนชำระพร้อมดอกเบี้ยแบบละเอียด</p>
+            <p>กรุณากรอกข้อมูลใน <a href="YOUR_GOOGLE_FORM_URL" target="_blank">แบบฟอร์มนี้</a> ก่อนคำนวณ</p>
         </div>
 
         <div class="input-container">
             <div class="input-group">
                 <div class="input-field">
                     <label>เงินต้น (บาท)</label>
-                    <input type="number" id="principal" min="0" step="100" placeholder="ระบุจำนวนเงินต้น">
+                    <input type="number" id="principal" min="0" step="100" placeholder="ระบุจำนวนเงินต้น" disabled>
                 </div>
-                
                 <div class="input-field">
                     <label>จำนวนงวด</label>
-                    <input type="number" id="periods" min="1" max="360" placeholder="ระบุจำนวนงวด">
-                </div>
-                
-                <div class="input-field">
-                    <label>อัตราดอกเบี้ย (% ต่องวด)</label>
-                    <input type="number" id="interestRate" min="0" step="0.01" placeholder="ระบุอัตราดอกเบี้ย">
+                    <input type="number" id="periods" min="1" max="360" placeholder="ระบุจำนวนงวด" disabled>
                 </div>
             </div>
 
