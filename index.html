@@ -75,20 +75,20 @@
             }
 
             var monthlyInterest = interestRate / 12;
+            // คำนวณยอดชำระต่อเดือน (คงที่) ตามสูตรการคำนวณการชำระหนี้
             var monthlyPayment = (principal * monthlyInterest) / (1 - Math.pow(1 + monthlyInterest, -months));
 
             var tableBody = document.querySelector("#resultTable tbody");
-            tableBody.innerHTML = ""; // Clear previous rows
+            tableBody.innerHTML = ""; // เคลียร์ผลลัพธ์เก่า
 
             var remainingPrincipal = principal;
+
             for (var i = 1; i <= months; i++) {
                 var interest = remainingPrincipal * monthlyInterest;
-                var totalPayment = monthlyPayment;
-                var principalPayment = totalPayment - interest;
+                var principalPayment = monthlyPayment - interest;
                 remainingPrincipal -= principalPayment;
 
                 var row = document.createElement('tr');
-
                 row.innerHTML = `
                     <td>${i}</td>
                     <td>${remainingPrincipal.toFixed(2)}</td>
@@ -97,7 +97,6 @@
                     <td>${monthlyPayment.toFixed(2)}</td>
                     <td>${remainingPrincipal.toFixed(2)}</td>
                 `;
-
                 tableBody.appendChild(row);
             }
 
