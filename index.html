@@ -3,104 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คำนวณตอกเบี้ย</title>
+    <title>เครื่องคำนวณตารางผ่อนชำระ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f4f4f9;
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-color: #1e293b;
         }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .calculator-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .calculator-header p {
+            color: #64748b;
+        }
+
+        .input-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        .calculate-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow: auto;
+            margin-top: 2rem;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            font-size: 0.95rem;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+
         th, td {
-            padding: 8px;
+            padding: 1rem;
             text-align: right;
+            border-bottom: 1px solid var(--border-color);
         }
+
         th {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
         }
-        input[type="number"], input[type="button"] {
-            padding: 8px;
-            width: 100%;
-            margin: 5px 0;
-            font-size: 16px;
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        td {
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .input-field {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>คำนวณตอกเบี้ย</h2>
-    <form id="loanForm">
-        <label for="principal">เงินต้น (บาท):</label>
-        <input type="number" id="principal" name="principal" required>
+    <div class="container">
+        <div class="calculator-header">
+            <h1>เครื่องคำนวณตารางผ่อนชำระ</h1>
+            <p>คำนวณการผ่อนชำระพร้อมดอกเบี้ยแบบละเอียด</p>
+        </div>
 
-        <label for="interestRate">ดอกเบี้ย (% ต่อปี):</label>
-        <input type="number" id="interestRate" name="interestRate" required>
+        <div class="input-container">
+            <div class="input-group">
+                <div class="input-field">
+                    <label>เงินต้น (บาท)</label>
+                    <input type="number" id="principal" min="0" step="100" placeholder="ระบุจำนวนเงินต้น">
+                </div>
+                
+                <div class="input-field">
+                    <label>จำนวนงวด</label>
+                    <input type="number" id="periods" min="1" max="360" placeholder="ระบุจำนวนงวด">
+                </div>
+                
+                <div class="input-field">
+                    <label>อัตราดอกเบี้ย (% ต่องวด)</label>
+                    <input type="number" id="interestRate" min="0" step="0.01" placeholder="ระบุอัตราดอกเบี้ย">
+                </div>
+            </div>
 
-        <label for="months">จำนวนงวด (เดือน):</label>
-        <input type="number" id="months" name="months" required>
+            <div class="button-container">
+                <button onclick="calculateLoan()" class="calculate-btn">
+                    <i class="fas fa-calculator"></i>
+                    คำนวณ
+                </button>
+            </div>
+        </div>
 
-        <input type="button" value="คำนวณ" onclick="calculateLoan()">
-    </form>
+        <div id="result">
+            <div class="table-container">
+                <table id="loanTable">
+                    <thead>
+                        <tr>
+                            <th>งวด</th>
+                            <th>เงินต้น</th>
+                            <th>ดอกเบี้ย</th>
+                            <th>เงินต้น+ดอกเบี้ย</th>
+                            <th>ชำระ/งวด</th>
+                            <th>เงินต้นคงเหลือ</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-    <table id="resultTable" style="display:none;">
-        <thead>
-            <tr>
-                <th>งวด</th>
-                <th>เงินต้น (บาท)</th>
-                <th>ดอกเบี้ย (บาท)</th>
-                <th>เงินต้น + ดอกเบี้ย (บาท)</th>
-                <th>ชำระ/เดือน (บาท)</th>
-                <th>เงินต้นคงเหลือ (บาท)</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+            <div id="summary" class="summary" style="display: none;">
+                <div class="summary-item">
+                    <div class="summary-label">ยอดเงินต้นทั้งหมด</div>
+                    <div class="summary-value" id="totalPrincipal">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">ดอกเบี้ยรวมทั้งหมด</div>
+                    <div class="summary-value" id="totalInterest">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">ยอดชำระทั้งหมด</div>
+                    <div class="summary-value" id="totalPayment">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        function calculateLoan() {
-            var principal = parseFloat(document.getElementById('principal').value);
-            var interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
-            var months = parseInt(document.getElementById('months').value);
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('th-TH', {
+                style: 'currency',
+                currency: 'THB',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(number);
+        }
 
-            if (isNaN(principal) || isNaN(interestRate) || isNaN(months)) {
-                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+        function calculateLoan() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const periods = parseInt(document.getElementById('periods').value);
+            const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+            
+            if (!principal || !periods || isNaN(rate)) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
                 return;
             }
 
-            var monthlyInterest = interestRate / 12;
-            // คำนวณยอดชำระต่อเดือน (คงที่) ตามสูตรการคำนวณการชำระหนี้
-            var monthlyPayment = (principal * monthlyInterest) / (1 - Math.pow(1 + monthlyInterest, -months));
+            const tbody = document.getElementById('loanTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
 
-            var tableBody = document.querySelector("#resultTable tbody");
-            tableBody.innerHTML = ""; // เคลียร์ผลลัพธ์เก่า
+            let remainingPrincipal = principal;
+            const paymentPerPeriod = principal / periods;
+            let totalInterest = 0;
 
-            var remainingPrincipal = principal;
+            for (let i = 1; i <= periods; i++) {
+                const interest = remainingPrincipal * rate;
+                totalInterest += interest;
+                const totalPayment = paymentPerPeriod + interest;
 
-            for (var i = 1; i <= months; i++) {
-                var interest = remainingPrincipal * monthlyInterest;
-                var principalPayment = monthlyPayment - interest;
-                remainingPrincipal -= principalPayment;
-
-                var row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${i}</td>
-                    <td>${remainingPrincipal.toFixed(2)}</td>
-                    <td>${interest.toFixed(2)}</td>
-                    <td>${(remainingPrincipal + interest).toFixed(2)}</td>
-                    <td>${monthlyPayment.toFixed(2)}</td>
-                    <td>${remainingPrincipal.toFixed(2)}</td>
-                `;
-                tableBody.appendChild(row);
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = i;
+                row.insertCell(1).textContent = formatCurrency(remainingPrincipal);
+                row.insertCell(2).textContent = formatCurrency(interest);
+                row.insertCell(3).textContent = formatCurrency(totalPayment);
+                row.insertCell(4).textContent = formatCurrency(totalPayment);
+                
+                remainingPrincipal -= paymentPerPeriod;
+                row.insertCell(5).textContent = formatCurrency(Math.max(0, remainingPrincipal));
             }
 
-            document.getElementById('resultTable').style.display = 'table';
+            // Update summary
+            document.getElementById('summary').style.display = 'grid';
+            document.getElementById('totalPrincipal').textContent = formatCurrency(principal);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('totalPayment').textContent = formatCurrency(principal + totalInterest);
         }
     </script>
 </body>
